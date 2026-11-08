@@ -1,0 +1,24 @@
+[package]
+name = "sonification-core-wasm"
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+sonification_core_rs = { package = "sonification-core", path = "../.." }
+# Pinned exactly: CI installs the wasm-bindgen CLI of this same version.
+wasm-bindgen = "=0.2.130"
+# Mappings, events and manifests cross into JavaScript as plain JSON-shaped objects.
+serde = "1.0.228"
+serde_json = { version = "1.0.154", features = ["float_roundtrip"] }
+
+[profile.release]
+opt-level = "s"
+lto = true
+
+# A separate workspace, so the core crate's `cargo test` never builds WebAssembly.
+[workspace]

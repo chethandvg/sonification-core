@@ -1,0 +1,30 @@
+[build-system]
+requires = ["maturin>=1.16,<2"]
+build-backend = "maturin"
+
+[project]
+name = "sonification-core"
+version = "0.1.0"
+description = "Turns measured rhythms into sound that keeps their ratios: a mapping grammar, audification and sonification manifests, in Rust, Python and WebAssembly."
+readme = "README.md"
+license = "Apache-2.0"
+authors = [{ name = "Chethan Dandebala Venkatarama" }]
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.22"]
+keywords = ["sonification", "audification", "auditory-display", "rust", "webassembly"]
+classifiers = [
+  "Programming Language :: Rust",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering :: Mathematics",
+]
+
+[project.optional-dependencies]
+# The manifest schema test; it is skipped when jsonschema is not installed.
+test = ["pytest>=9", "jsonschema>=4.23"]
+
+[project.urls]
+Homepage = "https://chethandvg.github.io/frequencies-of-life/repos/sonification-core/"
+Repository = "https://github.com/chethandvg/sonification-core"
+
+[tool.maturin]
+module-name = "sonification_core"

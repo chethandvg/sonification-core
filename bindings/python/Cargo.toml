@@ -1,0 +1,22 @@
+[package]
+name = "sonification-core-py"
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+publish = false
+
+[lib]
+name = "sonification_core"
+crate-type = ["cdylib"]
+
+[dependencies]
+sonification_core_rs = { package = "sonification-core", path = "../.." }
+pyo3 = { version = "0.30.1", features = ["abi3-py310"] }
+# rust-numpy, the PyO3 project's NumPy bindings (BSD-2-Clause): signals come back as numpy arrays.
+numpy = "0.30.0"
+# Mappings, events and manifests cross into Python as JSON-shaped dicts and lists.
+serde = "1.0.228"
+serde_json = { version = "1.0.154", features = ["float_roundtrip"] }
+
+# A separate workspace, so the core crate's `cargo test` never links Python.
+[workspace]

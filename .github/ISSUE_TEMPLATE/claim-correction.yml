@@ -1,0 +1,25 @@
+name: Claim correction
+description: Report a claim that is wrong, outdated or badly sourced.
+labels: [claim]
+body:
+  - type: input
+    id: claim
+    attributes:
+      label: Claim ID
+      description: From claims.yaml or the README table.
+      placeholder: "sonify:CLAIM-ID"
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is wrong?
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Source
+      description: DOI or PMID that supports the correction.
+    validations:
+      required: true

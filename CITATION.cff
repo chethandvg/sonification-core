@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it using these metadata."
+type: software
+title: "Sonification core"
+abstract: "Turns measured rhythms into sound that keeps their ratios: a mapping grammar, audification and sonification manifests, in Rust, Python and WebAssembly."
+authors:
+  - given-names: "Chethan"
+    family-names: "Dandebala Venkatarama"
+    alias: "chethandvg"
+    orcid: "https://orcid.org/0009-0006-6099-343X"
+repository-code: "https://github.com/chethandvg/sonification-core"
+url: "https://chethandvg.github.io/frequencies-of-life/repos/sonification-core/"
+license: Apache-2.0
+version: 0.1.0
+date-released: "2026-11-08"
+keywords:
+  - sonification
+  - audification
+  - auditory-display
+  - rust
+  - webassembly

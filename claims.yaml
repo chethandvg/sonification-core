@@ -1,0 +1,112 @@
+# Claims ledger for sonification-core (schema evidence-kernel/claims@1, https://github.com/chethandvg/evidence-kernel).
+# Levels: P proved in Lean · V verified numerics · T tested · R referenced (DOI/PMID) · M model assumption.
+schema: evidence-kernel/claims@1
+repo: sonification-core
+prefix: sonify
+claims:
+  - id: sonify:TIME-MAP
+    version: 1.0.0
+    level: P
+    statement: "For a speed-up k > 0, the time map a(t) = offset + t/k (rhythm-units' scalePeriod t k moved by offset) is strictly increasing, keeps every ratio of durations, (a(t₃) − a(t₂))/(a(t₂) − a(t₁)) = (t₃ − t₂)/(t₂ − t₁), and its inverse a ↦ (a − offset)·k undoes it both ways."
+    proof: proofs/SonificationCore/TimeMap.lean#SonificationCore.time_map
+    depends_on: ["rhythm:TIME-SCALING-PERIODIC@1"]
+    tests: [vectors/maps.json]
+    notes: "A span of T real seconds lasts scalePeriod T k = T/k audio seconds, the scaling under which rhythm:TIME-SCALING-PERIODIC shows that a rhythm of period T repeats every T/k; that a rhythm of f Hz is then heard at k·f Hz is rhythm:TIME-SCALING-FREQUENCY, referenced, not proved again here."
+  - id: sonify:OCTAVE-SHIFT
+    version: 1.0.0
+    level: P
+    statement: "Moving every frequency by the same n octaves, f ↦ f·2ⁿ (pitch-math's octaveTranspose), keeps every frequency ratio and so every interval in cents: cents(f₁·2ⁿ, f₂·2ⁿ) = cents(f₁, f₂) for all real f₁, f₂ and integers n."
+    proof: proofs/SonificationCore/Pitch.lean#SonificationCore.octave_shift
+    depends_on: ["pitch:OCTAVE-TRANSPOSE-RATIOS@1"]
+    tests: [vectors/maps.json]
+    notes: "The ratio is kept by pitch:OCTAVE-TRANSPOSE-RATIOS, whose Lean proof (PitchMath.octave_transpose_ratios) this proof reuses; the cents follow from pitch-math's definition cents(f, g) = 1200·log₂(g/f)."
+  - id: sonify:LOG-MAP
+    version: 1.0.0
+    level: P
+    statement: "For x_lo < x_hi and 0 < f_lo < f_hi, the exponential (log-frequency) map g(x) = f_lo·(f_hi/f_lo)^((x − x_lo)/(x_hi − x_lo)) sends x_lo to f_lo and x_hi to f_hi, is strictly increasing, and g(x + d)/g(x) = (f_hi/f_lo)^(d/(x_hi − x_lo)) does not depend on x: equal steps of the data give equal frequency ratios."
+    proof: proofs/SonificationCore/Maps.lean#SonificationCore.log_map
+    tests: [vectors/maps.json]
+  - id: sonify:LINEAR-MAP
+    version: 1.0.0
+    level: P
+    statement: "For x_lo < x_hi, the linear map y_lo + (x − x_lo)/(x_hi − x_lo)·(y_hi − y_lo) sends x_lo to y_lo and x_hi to y_hi, is strictly increasing when y_lo < y_hi, and with the position clamped to [0, 1] its output always lies between y_lo and y_hi."
+    proof: proofs/SonificationCore/Maps.lean#SonificationCore.linear_map
+    tests: [vectors/maps.json]
+  - id: sonify:ONSET-DETECTION-METHOD
+    version: 1.0.0
+    level: R
+    statement: "The usual way to detect note onsets in music signals is to look for transient regions, for example a sudden burst of energy; methods based on the signal's amplitude envelope are among the onset-detection techniques that Bello et al. 2005 review, categorise and compare."
+    method: "Tutorial review of onset-detection methods for music signals, compared on test cases; checked against the paper's abstract (DOI resolved on 7 Nov 2026)."
+    sources:
+      - cite: "Bello, Daudet, Abdallah, Duxbury, Davies and Sandler 2005, IEEE Transactions on Speech and Audio Processing 13(5):1035–1047, 'A tutorial on onset detection in music signals'"
+        doi: "10.1109/TSA.2005.851998"
+    notes: "Only the general approach is referenced. This crate's detector (two energy windows around each candidate time, a rise threshold in dB, the largest rise within a minimum gap, then refinement to the frame) is its own design: its behaviour on this crate's renders is tested (sonify:ROUND-TRIP, sonify:ONSETS-MATCH-REFERENCE), not referenced."
+  - id: sonify:MAPS-MATCH-REFERENCE
+    version: 1.0.0
+    level: T
+    statement: "to_audio, to_real, map_value (constant, linear and exponential, clamped or not) and map_pitch (hz; midi with or without a scale; rhythm, a frequency sped up and moved by octaves; fold, a frequency folded into an octave) match exact arithmetic (Fractions, and mpmath at 50 digits for powers) within 1e-14 relative on the golden vectors (largest measured difference 2.3e-16 relative); linear and exponential maps return out_hi exactly at the top end. The time map's spans and frequencies go through rhythm-units' scale_period and scale_frequency, MIDI notes through pitch-math's midi_to_hz, octave shifts and folds through pitch-math's octave_transpose and octave_fold."
+    depends_on: ["sonify:TIME-MAP@1", "sonify:LINEAR-MAP@1", "sonify:LOG-MAP@1", "sonify:OCTAVE-SHIFT@1", "rhythm:TIME-SCALING-FREQUENCY@1", "pitch:ET-FORMULA@1", "pitch:OCTAVE-FOLD-EXACT@1"]
+    tests: [vectors/maps.json, src/map.rs]
+  - id: sonify:SCALE-QUANTISE
+    version: 1.0.0
+    level: T
+    statement: "quantise returns the nearest MIDI note whose pitch class above the root is in the scale; a note exactly halfway between two scale notes goes to the higher one, as pitch-math's nearest_note rounds halves up. The E6 pentatonic notes of the earlier Genesis piece (MIDI 88, 90, 92, 95, 97, 100, 102 and 104) are E major pentatonic (root 4, pitch classes 0, 2, 4, 7 and 9) with the MIDI map clamped to 88..104."
+    tests: [vectors/maps.json, src/map.rs]
+  - id: sonify:AUDIFY-MATCHES-REFERENCE
+    version: 1.0.0
+    level: T
+    statement: "audify matches lifesound.audify (copied into the oracle: numpy.interp at the speed-up, mean removed, divided by max|y| + 1e-12) within 1e-12 on the golden vectors (largest measured difference 3.3e-16), with two changes made in Rust, Python, JavaScript and the oracle. Audio that would not vary is an error instead of lifesound.py's output (all zeros when the mean came out exact, and otherwise the mean's rounding error scaled up): a constant series, silence included, and a series whose interpolated samples are all equal (it varies only between the audio's sample times or after the last of them). And the mean is removed from the samples less the first one, which in exact arithmetic changes nothing (the oracle's outputs agree with mean removal in Fractions within 1e-15, and with lifesound.py's own formula within 2.2e-16 on the five other vectors) but keeps a series near 7e4 that steps by one unit in the last place a step, where lifesound.py's formula gives the step with a large offset (0.61 away). As in numpy.interp, a sample at a data point's own time takes that point's value, so a slope too steep for an f64 is no error there (a golden vector). heard_hz(T, k), rhythm-units' scale_frequency(hz_from_period(T), k), is k/T within 1e-14 relative of the exact quotient: a rhythm of period T audified at speed-up k is heard at k/T Hz."
+    depends_on: ["rhythm:TIME-SCALING-FREQUENCY@1", "rhythm:FREQ-PERIOD-INVERSE@1"]
+    tests: [vectors/audify.json, vectors/maps.json, vectors/errors.json, src/audify.rs]
+  - id: sonify:EVENTS-MATCH-REFERENCE
+    version: 1.0.0
+    level: T
+    statement: "sonify gives one event per data point, in order, with audio_s, hz, gain_db, pan and dur_s from the mapping's maps, matching the exact maps within 1e-12 (largest measured difference 1.7e-16 relative); missing JSON fields take the documented defaults (gain 0 dB, centre pan, lifesound.py's instrument parameters), whole numbers may be written as whole floats (4.0), and a note before audio time 0, panned outside [−1, 1], of length 0 or below, or with a gain whose amplitude 10^(gain_db/20) is not finite is an error. sonify first checks every constant of the mapping on its own and the output of every constant map (Mapping::check: the speed-ups, the map ends, the scale, a fold's low_hz within pitch-math's range, an octave count that some frequency heard at the rhythm's speed-up survives, and a constant frequency, gain, pan or length), so such a mapping is an error even for a series with no points; an output that depends on the data is checked as each point is mapped."
+    depends_on: ["sonify:MAPS-MATCH-REFERENCE@1"]
+    tests: [vectors/events.json, src/event.rs]
+  - id: sonify:RENDER-MATCHES-REFERENCE
+    version: 1.0.0
+    level: T
+    statement: "render matches lifesound.py's instruments (with signal-core's SplitMix64 noise and ln 1000 in exp_decay), pan and mix_into, with each note's gain 10^(gain_db/20), within 1e-12 on the golden vectors (all six instruments, and three overlapping notes panned hard left and right; largest measured difference 5.7e-15): synthesis-theory plays each note, signal-core pans and mixes it and audio-safety-math converts its gain."
+    depends_on: ["synth:MODAL-CHIME-MATCHES-REFERENCE@1", "synth:FM-MATCHES-REFERENCE@1", "synth:KARPLUS-STRONG-MATCHES-REFERENCE@1", "synth:KS-TUNED@1", "synth:SOFT-VOICE-MATCHES-REFERENCE@1", "synth:HEARTBEAT-MATCHES-REFERENCE@1", "signal:PAN-EQUAL-POWER@1", "signal:MIX-INTO-MATCHES-REFERENCE@1", "safety:DB-CONVERSIONS@1"]
+    tests: [vectors/render.json]
+  - id: sonify:RENDER-DETERMINISTIC
+    version: 1.0.0
+    level: T
+    statement: "The same events, sample rate and seed always give the same WAV bytes and SHA-256 (rendered twice in Rust, Python and JavaScript), and a different seed changes the dither and so the hash; the SHA-256 that an independent writer computes (numpy instruments, Python's wave module, hashlib) equals the crate's exactly in Rust, Python and WebAssembly on the golden vectors."
+    depends_on: ["sonify:RENDER-MATCHES-REFERENCE@1", "signal:WAV-BYTES-MATCH-REFERENCE@1", "signal:RNG-REPRODUCIBLE@1"]
+    tests: [vectors/manifests.json, tests/roundtrip.rs, bindings/python/tests/test_vectors.py, bindings/wasm/tests/vectors.test.mjs]
+    notes: "Exact equality across implementations holds because 16-bit quantisation absorbs the last-bit differences of sin, exp and pow (at most 5.7e-15 here): a sample would have to land within that of a rounding boundary to change. It is checked on the platforms CI runs, not proved for every platform."
+  - id: sonify:MANIFEST
+    version: 1.0.0
+    level: T
+    statement: "write_manifest's manifest (format sonification-manifest/0.1-draft: title, creator, the audio's licence, the software name and version, sources with claim ids, DOIs and values, every layer's full mapping and events, render settings with the instruments used, and the frames, peak and SHA-256 of the 16-bit PCM WAV file) matches an independent writer, validates against schema/manifest.schema.json (JSON Schema 2020-12, whose text patterns list the blank characters, Unicode's control characters and white space, by code point, and end in (?![\\s\\S]), the end of the text both in ECMA-262 and in Python's re, where $ would also match before a final line feed; checked with jsonschema in the oracle and the Python tests, and in the Rust tests by a checker of the schema's own keywords that does not share the crate's character tests; the Python and WebAssembly tests check that a title, claim, DOI or SHA-256 ending in a line feed fails), also when its title, a claim or a DOI holds each control character and each of Unicode's 25 White_Space characters in turn (in the Rust and Python tests), round-trips through JSON unchanged (to_json and from_json both ways in Rust, json in Python), and describes its own events (reproduces_events: they reproduce from its mappings, every layer's claim is one of the sources, its instrument list is the events' own, its audio is wav-pcm16 in 2 channels, and its title, creator, licence and sources have the form write_manifest requires); a series whose claim is not among the sources, a layer without points whose mapping fails Mapping::check, a title, creator or licence that is blank or holds a control character, a claim id or DOI that is malformed or holds a blank character, a piece without events, a sample rate of 0 and a seed above 2^53 − 1 are errors."
+    depends_on: ["sonify:EVENTS-MATCH-REFERENCE@1", "sonify:RENDER-DETERMINISTIC@1"]
+    tests: [vectors/manifests.json, schema/manifest.schema.json, tests/roundtrip.rs, bindings/python/tests/test_vectors.py]
+  - id: sonify:ONSETS-MATCH-REFERENCE
+    version: 1.0.0
+    level: T
+    statement: "detect_onsets, verify and verify_wav match an independent Python port of their documented method (running totals of the stereo power l² + r², the energy ratio of the windows after and before each candidate with each energy raised to a power floor, −90 dB by default, if below it, a rise threshold, the latest largest rise within the minimum gap, refinement to the frame; events matched in audio-time order to the nearest free onset within the tolerance, leftover onsets near a heartbeat note's own dubs and later beats counted as within the note, the manifest's description of its events (layer claims among the sources, the instrument list, the encoding and channels, and the form of its title, creator, licence and sources) and the audio's length checked; for verify_wav, the WAV file decoded and compared byte for byte with a new render of the manifest's events, whose peak must be the manifest's) exactly in the onset times and within 1e-12 relative and 1e-9 absolute in the report (largest measured difference 1.4e-14), on twelve cases including a manifest shifted by 10 ms, a WAV file whose first note starts after 0.2 s of dithered silence, a manifest with the same timing but other pitches, and manifests with a false peak, instrument list, claim or channel count, or a claim id with a space."
+    depends_on: ["sonify:ONSET-DETECTION-METHOD@1"]
+    tests: [vectors/onsets.json, src/verify.rs]
+  - id: sonify:ROUND-TRIP
+    version: 1.0.0
+    level: T
+    statement: "For renders of all six instruments at 8, 22.05, 44.1 and 48 kHz whose notes start from silence (0.4 s notes 0.47 to 0.69 s apart, gains −18 to −6 dB, speed-up 600, the first note 0.05 or 0.3 s into the audio), verify on the float render and verify_wav on the 16-bit WAV file that write_manifest returns both match every event to an onset within 0.5 ms of its audio time (largest measured 0.38 ms) with no extra onsets, and recover each event's real time within 600 times that (the real-time error is k times the audio error, within rounding); quiet notes after 0.3 s of dithered silence at 8 and 44.1 kHz are matched within 1 ms for the struck, plucked and beating instruments at −50 dB and within 1.5 ms for the soft voice at −30 dB (largest measured 0.55 and 1.3 ms); on the test's own series, struck bars and FM bells that overlap (1.2 s notes 0.19 to 0.29 s apart at −12 dB, 44.1 kHz) are matched within the default 2 ms tolerance (largest measured 1.55 ms), and in 40 seeded random pieces of that kind every FM bell note is too (largest measured 1.33 ms), but for struck bars this is not a bound: 3 of the 40 struck-bar pieces fail, with a bar found 2.16 or 2.36 ms early, or not found, while earlier bars still ring; and the check fails for a manifest whose times are 10 ms off (self-consistent or edited), audio longer than the manifest records, a note the manifest does not list (inside a heartbeat note too), and a manifest whose instrument list, encoding, channel count or claims misdescribe its events, and verify_wav fails for a manifest with the same timing but other pitches, even with the file's SHA-256 copied into it, or with a false peak."
+    depends_on: ["sonify:TIME-MAP@1", "sonify:ONSETS-MATCH-REFERENCE@1", "sonify:MANIFEST@1"]
+    tests: [tests/roundtrip.rs, bindings/python/tests/test_vectors.py, bindings/wasm/tests/vectors.test.mjs]
+    notes: "verify checks timing, length and the manifest's description of its events; verify_wav also ties pitch, gain, pan, length, instrument and peak to the file, by rendering the manifest's events again and comparing bytes. Neither checks what the title, creator, licence, software or the sources' DOIs and values say, only the form write_manifest requires of all but the software. The bounds above are what the tests assert; the figures marked largest measured are what they print. Energy onsets separate only what rises above what already sounds: a soft voice over sustained notes, a quiet note while a loud one still rings, struck bars overlapping at equal gain (now and then found a few ms early, or not at all), and notes (or heartbeat dubs) closer than min_gap_s (50 ms) to another onset are not reliably found, and a note that fades in is found where the energy before it rises above the floor, so later the quieter it is (at −40 dB some notes of the soft voice, with its 80 ms attack, are found more than 2 ms late, outside the default tolerance; a test checks that all stay within 3 ms, largest measured 2.75 ms); the round trip is claimed for the renders above, not for every piece. The −90 dB floor is set by 16-bit dither: a frame of dithered silence has at most 2/32767² of power (−87.3 dB), so a window of it holds at most 1.86 times the floor's energy, a 2.7 dB rise, below the 6 dB threshold; audio with louder background noise needs a higher floor_db."
+  - id: sonify:INPUT-VALIDATION
+    version: 1.0.0
+    level: T
+    statement: "Every function rejects NaN and infinite input, a speed-up of 0 or below, a map whose input ends are equal or whose exponential outputs are not above 0, a pitch of 0 Hz or below, an octave shift outside pitch-math's range, a fold's low_hz outside pitch-math's range, a scale root or pitch class outside 0..11 or an empty scale, an integer field that is not a whole number, an event before audio time 0 or panned outside [−1, 1], a note of length 0 or below, a series to audify whose audio would not vary, times and values of different lengths, a sample rate of 0 (with no events too), a seed above 2^53 − 1, a stereo buffer of odd length, a hop or window shorter than a sample, a hop, window or minimum gap that is negative or beyond MAX_SAMPLES samples, a power floor of 0 or infinity, a negative tolerance, a file that is not a stereo 16-bit PCM WAV file at the manifest's sample rate, a gain whose amplitude is not finite, unknown or missing JSON fields, and the manifest rules of sonify:MANIFEST; the crate's own errors name the argument they are about (sample_rate, hop_s, window_s, min_gap_s, audio_s, dur_s, gain_db, octaves, title and so on; sample_rate also in Instrument::note), errors from rhythm-units, pitch-math, signal-core and synthesis-theory keep their names and messages, and a gain that audio-safety-math's db_to_amplitude cannot turn into a finite amplitude is reported as gain_db. Rust returns SonifyError, Python raises ValueError (OverflowError for a negative or too-large integer argument such as a sample rate, or a seed beyond 64 bits, TypeError for a non-integer one) and JavaScript throws an Error (also for a sample rate that is not a whole number up to 2^32 − 1 or a seed that is not a whole number up to 2^53 − 1)."
+    tests: [vectors/errors.json, tests/roundtrip.rs, src/lib.rs, src/map.rs, src/audify.rs, src/event.rs, src/verify.rs, bindings/python/tests/test_vectors.py, bindings/wasm/tests/vectors.test.mjs]
+  - id: sonify:IMPLEMENTATIONS-AGREE
+    version: 1.0.0
+    level: T
+    statement: "The Rust crate, the Python bindings and the WebAssembly bindings all reproduce every golden vector. Every expected output comes from the oracle (lifesound.py's code with signal-core's documented changes and two to audify, exact Fractions and mpmath for the maps, and independent Python versions of sonify, render, the manifest writer, the onset detector, verify and verify_wav), never from the Rust output; the error cases in errors.json are the crate's own input rules."
+    tests:
+      - vectors/generate.py
+      - tests/vectors.rs
+      - bindings/python/tests/test_vectors.py
+      - bindings/wasm/tests/vectors.test.mjs

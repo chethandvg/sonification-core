@@ -1,0 +1,20 @@
+name: hygiene
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "23 4 * * 1" # weekly, to catch newly retracted sources
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  claims:
+    uses: chethandvg/.github/.github/workflows/claims-verify.yml@v1
+  licences:
+    uses: chethandvg/.github/.github/workflows/license-check.yml@v1
+  site-url:
+    uses: chethandvg/.github/.github/workflows/site-url-check.yml@v1

@@ -1,0 +1,832 @@
+{
+ "schema": "golden-vectors@1",
+ "description": "The time, parameter and pitch maps, scale quantisation and heard frequencies against exact arithmetic.",
+ "tolerance": {
+  "rel": 1e-14,
+  "abs": 0
+ },
+ "cases": [
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "to_audio",
+   "args": [
+    {
+     "speedup": 600.0,
+     "offset_s": 2.0
+    },
+    1234.5
+   ],
+   "expected": 4.0575,
+   "note": "2 + 1234.5 / 600",
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "to_audio",
+   "args": [
+    {
+     "speedup": 180.0
+    },
+    600.0
+   ],
+   "expected": 3.3333333333333335,
+   "note": "a 10-minute span sped up 180 times lasts 10/3 s",
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "to_audio",
+   "args": [
+    {
+     "speedup": 0.25,
+     "offset_s": 10.0
+    },
+    -2.0
+   ],
+   "expected": 2.0,
+   "note": "k < 1 slows time down",
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "to_real",
+   "args": [
+    {
+     "speedup": 600.0,
+     "offset_s": 2.0
+    },
+    4.0575
+   ],
+   "expected": 1234.5,
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "to_real",
+   "args": [
+    {
+     "speedup": 180.0
+    },
+    3.3333333333333335
+   ],
+   "expected": 600.0,
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "to_real",
+   "args": [
+    {
+     "speedup": 1000000.0,
+     "offset_s": 0.5
+    },
+    0.25
+   ],
+   "expected": -250000.0,
+   "note": "before the offset: a negative real time",
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "map_value",
+   "args": [
+    {
+     "kind": "constant",
+     "value": -12.0
+    },
+    3.0
+   ],
+   "expected": -12.0,
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "map_value",
+   "args": [
+    {
+     "kind": "linear",
+     "x_lo": 0.0,
+     "x_hi": 10.0,
+     "out_lo": -1.0,
+     "out_hi": 1.0
+    },
+    2.5
+   ],
+   "expected": -0.5,
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "map_value",
+   "args": [
+    {
+     "kind": "linear",
+     "x_lo": 0.0,
+     "x_hi": 10.0,
+     "out_lo": -1.0,
+     "out_hi": 1.0
+    },
+    10.0
+   ],
+   "expected": 1.0,
+   "note": "t = 1 gives out_hi exactly",
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "map_value",
+   "args": [
+    {
+     "kind": "linear",
+     "x_lo": 10.0,
+     "x_hi": 0.0,
+     "out_lo": -30.0,
+     "out_hi": -6.0
+    },
+    12.5
+   ],
+   "expected": -36.0,
+   "note": "x_hi < x_lo; past the end, unclamped",
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "map_value",
+   "args": [
+    {
+     "kind": "linear",
+     "x_lo": 10.0,
+     "x_hi": 0.0,
+     "out_lo": -30.0,
+     "out_hi": -6.0,
+     "clamp": true
+    },
+    12.5
+   ],
+   "expected": -30.0,
+   "note": "clamped to out_lo",
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "map_value",
+   "args": [
+    {
+     "kind": "linear",
+     "x_lo": 0.0,
+     "x_hi": 1.0,
+     "out_lo": 0.1,
+     "out_hi": 0.3
+    },
+    0.7
+   ],
+   "expected": 0.24,
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "map_value",
+   "args": [
+    {
+     "kind": "exponential",
+     "x_lo": 0.0,
+     "x_hi": 3.0,
+     "out_lo": 110.0,
+     "out_hi": 880.0
+    },
+    1.0
+   ],
+   "expected": 220.0,
+   "note": "equal steps, equal ratios: 220 Hz",
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "map_value",
+   "args": [
+    {
+     "kind": "exponential",
+     "x_lo": 0.0,
+     "x_hi": 3.0,
+     "out_lo": 110.0,
+     "out_hi": 880.0
+    },
+    2.2
+   ],
+   "expected": 505.42727619869544,
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "map_value",
+   "args": [
+    {
+     "kind": "exponential",
+     "x_lo": 0.0,
+     "x_hi": 3.0,
+     "out_lo": 110.0,
+     "out_hi": 880.0
+    },
+    -1.5
+   ],
+   "expected": 38.890872965260115,
+   "note": "unclamped below x_lo",
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "map_value",
+   "args": [
+    {
+     "kind": "exponential",
+     "x_lo": 0.0,
+     "x_hi": 3.0,
+     "out_lo": 110.0,
+     "out_hi": 880.0,
+     "clamp": true
+    },
+    7.0
+   ],
+   "expected": 880.0,
+   "note": "clamped to out_hi",
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "map_value",
+   "args": [
+    {
+     "kind": "exponential",
+     "x_lo": -1.0,
+     "x_hi": 1.0,
+     "out_lo": 1.0,
+     "out_hi": 0.001
+    },
+    0.25
+   ],
+   "expected": 0.01333521432163324,
+   "note": "falling outputs",
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "map_pitch",
+   "args": [
+    {
+     "kind": "hz",
+     "map": {
+      "kind": "exponential",
+      "x_lo": 0.0,
+      "x_hi": 1.0,
+      "out_lo": 200.0,
+      "out_hi": 800.0
+     }
+    },
+    0.5
+   ],
+   "expected": 400.0,
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "map_pitch",
+   "args": [
+    {
+     "kind": "midi",
+     "map": {
+      "kind": "linear",
+      "x_lo": 0.0,
+      "x_hi": 1.0,
+      "out_lo": 60.0,
+      "out_hi": 72.0
+     }
+    },
+    0.75
+   ],
+   "expected": 440.0,
+   "note": "MIDI 69: 440 Hz",
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "map_pitch",
+   "args": [
+    {
+     "kind": "midi",
+     "map": {
+      "kind": "linear",
+      "x_lo": 0.0,
+      "x_hi": 1.0,
+      "out_lo": 60.0,
+      "out_hi": 72.0
+     }
+    },
+    0.3
+   ],
+   "expected": 322.0988531080376,
+   "note": "MIDI 63.6, unquantised",
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "map_pitch",
+   "args": [
+    {
+     "kind": "midi",
+     "map": {
+      "kind": "linear",
+      "x_lo": 0.0,
+      "x_hi": 1.0,
+      "out_lo": 88.0,
+      "out_hi": 104.0,
+      "clamp": true
+     },
+     "scale": {
+      "root": 4,
+      "pitch_classes": [
+       0,
+       2,
+       4,
+       7,
+       9
+      ]
+     }
+    },
+    0.0
+   ],
+   "expected": 1318.5102276514797,
+   "note": "E6, MIDI 88",
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "map_pitch",
+   "args": [
+    {
+     "kind": "midi",
+     "map": {
+      "kind": "linear",
+      "x_lo": 0.0,
+      "x_hi": 1.0,
+      "out_lo": 88.0,
+      "out_hi": 104.0,
+      "clamp": true
+     },
+     "scale": {
+      "root": 4,
+      "pitch_classes": [
+       0,
+       2,
+       4,
+       7,
+       9
+      ]
+     }
+    },
+    0.0625
+   ],
+   "expected": 1479.9776908465376,
+   "note": "MIDI 89, a tie between 88 and 90: up to F#6",
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "map_pitch",
+   "args": [
+    {
+     "kind": "midi",
+     "map": {
+      "kind": "linear",
+      "x_lo": 0.0,
+      "x_hi": 1.0,
+      "out_lo": 88.0,
+      "out_hi": 104.0,
+      "clamp": true
+     },
+     "scale": {
+      "root": 4,
+      "pitch_classes": [
+       0,
+       2,
+       4,
+       7,
+       9
+      ]
+     }
+    },
+    0.4
+   ],
+   "expected": 1975.5332050244965,
+   "note": "MIDI 94.4: the nearest scale note is B6 (95)",
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "map_pitch",
+   "args": [
+    {
+     "kind": "midi",
+     "map": {
+      "kind": "linear",
+      "x_lo": 0.0,
+      "x_hi": 1.0,
+      "out_lo": 88.0,
+      "out_hi": 104.0,
+      "clamp": true
+     },
+     "scale": {
+      "root": 4,
+      "pitch_classes": [
+       0,
+       2,
+       4,
+       7,
+       9
+      ]
+     }
+    },
+    2.0
+   ],
+   "expected": 3322.437580639561,
+   "note": "clamped to MIDI 104, G#7",
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "map_pitch",
+   "args": [
+    {
+     "kind": "rhythm",
+     "octaves": 4
+    },
+    12.5
+   ],
+   "expected": 200.0,
+   "note": "a 12.5 Hz beat heard 4 octaves up",
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "map_pitch",
+   "args": [
+    {
+     "kind": "rhythm",
+     "speedup": 60000.0
+    },
+    0.0016666666666666668
+   ],
+   "expected": 100.0,
+   "note": "a 10-minute rhythm at x60000",
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "map_pitch",
+   "args": [
+    {
+     "kind": "rhythm",
+     "speedup": 3.0,
+     "octaves": -2
+    },
+    100.0
+   ],
+   "expected": 75.0,
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "map_pitch",
+   "args": [
+    {
+     "kind": "rhythm",
+     "octaves": 4.0
+    },
+    10.0
+   ],
+   "expected": 160.0,
+   "note": "a whole float is a whole number",
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "map_pitch",
+   "args": [
+    {
+     "kind": "fold",
+     "low_hz": 220.0
+    },
+    0.0016666666666666668
+   ],
+   "expected": 436.9066666666667,
+   "note": "18 octaves up: 32768/75 Hz",
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "map_pitch",
+   "args": [
+    {
+     "kind": "fold",
+     "low_hz": 220.0
+    },
+    1.1574074074074073e-05
+   ],
+   "expected": 388.36148148148146,
+   "note": "a day, 25 octaves up",
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:MAPS-MATCH-REFERENCE",
+   "fn": "map_pitch",
+   "args": [
+    {
+     "kind": "fold",
+     "speedup": 0.5,
+     "low_hz": 100.0
+    },
+    1000.0
+   ],
+   "expected": 125.0,
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:SCALE-QUANTISE",
+   "fn": "quantise",
+   "args": [
+    {
+     "root": 4,
+     "pitch_classes": [
+      0,
+      2,
+      4,
+      7,
+      9
+     ]
+    },
+    88.0
+   ],
+   "expected": 88
+  },
+  {
+   "claim": "sonify:SCALE-QUANTISE",
+   "fn": "quantise",
+   "args": [
+    {
+     "root": 4,
+     "pitch_classes": [
+      0,
+      2,
+      4,
+      7,
+      9
+     ]
+    },
+    89.0
+   ],
+   "expected": 90,
+   "note": "halfway between 88 and 90: up"
+  },
+  {
+   "claim": "sonify:SCALE-QUANTISE",
+   "fn": "quantise",
+   "args": [
+    {
+     "root": 4,
+     "pitch_classes": [
+      0,
+      2,
+      4,
+      7,
+      9
+     ]
+    },
+    93.49
+   ],
+   "expected": 92
+  },
+  {
+   "claim": "sonify:SCALE-QUANTISE",
+   "fn": "quantise",
+   "args": [
+    {
+     "root": 4,
+     "pitch_classes": [
+      0,
+      2,
+      4,
+      7,
+      9
+     ]
+    },
+    93.5
+   ],
+   "expected": 95,
+   "note": "halfway between 92 and 95: up"
+  },
+  {
+   "claim": "sonify:SCALE-QUANTISE",
+   "fn": "quantise",
+   "args": [
+    {
+     "root": 4,
+     "pitch_classes": [
+      0,
+      2,
+      4,
+      7,
+      9
+     ]
+    },
+    -1.2
+   ],
+   "expected": -1
+  },
+  {
+   "claim": "sonify:SCALE-QUANTISE",
+   "fn": "quantise",
+   "args": [
+    {
+     "root": 0,
+     "pitch_classes": [
+      0
+     ]
+    },
+    66.0
+   ],
+   "expected": 72,
+   "note": "a tritone from both Cs: up"
+  },
+  {
+   "claim": "sonify:SCALE-QUANTISE",
+   "fn": "quantise",
+   "args": [
+    {
+     "root": 9,
+     "pitch_classes": [
+      0,
+      3,
+      5,
+      7,
+      10
+     ]
+    },
+    70.7
+   ],
+   "expected": 72,
+   "note": "A minor pentatonic"
+  },
+  {
+   "claim": "sonify:SCALE-QUANTISE",
+   "fn": "quantise",
+   "args": [
+    {
+     "root": 4.0,
+     "pitch_classes": [
+      0.0,
+      2,
+      4,
+      7,
+      9
+     ]
+    },
+    89.0
+   ],
+   "expected": 90,
+   "note": "whole floats"
+  },
+  {
+   "claim": "sonify:AUDIFY-MATCHES-REFERENCE",
+   "fn": "heard_hz",
+   "args": [
+    600.0,
+    60000.0
+   ],
+   "expected": 100.0,
+   "note": "a 10-minute rhythm audified 60000 times faster: 100 Hz",
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:AUDIFY-MATCHES-REFERENCE",
+   "fn": "heard_hz",
+   "args": [
+    0.25,
+    600.0
+   ],
+   "expected": 2400.0,
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  },
+  {
+   "claim": "sonify:AUDIFY-MATCHES-REFERENCE",
+   "fn": "heard_hz",
+   "args": [
+    1260.0,
+    6000.0
+   ],
+   "expected": 4.761904761904762,
+   "note": "21 minutes at x6000",
+   "tolerance": {
+    "rel": 1e-14,
+    "abs": 0
+   }
+  }
+ ]
+}

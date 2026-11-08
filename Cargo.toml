@@ -1,0 +1,40 @@
+[package]
+name = "sonification-core"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+description = "Turns measured rhythms into sound that keeps their ratios: a mapping grammar, audification and sonification manifests, in Rust, Python and WebAssembly."
+license = "Apache-2.0"
+authors = ["Chethan Dandebala Venkatarama"]
+repository = "https://github.com/chethandvg/sonification-core"
+homepage = "https://chethandvg.github.io/frequencies-of-life/repos/sonification-core/"
+readme = "README.md"
+keywords = ["sonification", "audification", "auditory-display", "rust", "webassembly"]
+categories = ["mathematics", "science"]
+include = ["/src", "/schema", "/README.md", "/LICENSE", "/NOTICE", "/CHANGELOG.md"]
+
+[dependencies]
+rhythm-units = { git = "https://github.com/chethandvg/rhythm-units", tag = "v0.1.0" }
+# Local form: rhythm-units = { path = "../rhythm-units" }
+pitch-math = { git = "https://github.com/chethandvg/pitch-math", tag = "v0.1.1" }
+# Local form: pitch-math = { path = "../pitch-math" }
+signal-core = { git = "https://github.com/chethandvg/signal-core", tag = "v0.1.0" }
+# Local form: signal-core = { path = "../signal-core" }
+synthesis-theory = { git = "https://github.com/chethandvg/synthesis-theory", tag = "v0.1.0" }
+# Local form: synthesis-theory = { path = "../synthesis-theory" }
+# Gains in dB become amplitudes through audio-safety-math's db_to_amplitude.
+audio-safety-math = { git = "https://github.com/chethandvg/audio-safety-math", tag = "v0.1.0" }
+# Local form: audio-safety-math = { path = "../audio-safety-math" }
+serde = { version = "1.0.228", features = ["derive"] }
+# float_roundtrip parses every number exactly, so a manifest round-trips through JSON unchanged.
+serde_json = { version = "1.0.154", features = ["float_roundtrip"] }
+# SHA-256 of the rendered WAV file (MIT OR Apache-2.0).
+sha2 = "0.10.9"
+
+[dev-dependencies]
+golden-vectors = { git = "https://github.com/chethandvg/evidence-kernel", tag = "v0.1.0" }
+# Local form: golden-vectors = { path = "../evidence-kernel/crates/golden-vectors" }
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"

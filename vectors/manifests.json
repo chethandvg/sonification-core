@@ -1,0 +1,463 @@
+{
+ "schema": "golden-vectors@1",
+ "description": "write_manifest against an independent writer: sources, mappings, events and the WAV's SHA-256.",
+ "tolerance": {
+  "rel": 1e-12,
+  "abs": 1e-12
+ },
+ "cases": [
+  {
+   "claim": "sonify:MANIFEST",
+   "fn": "write_manifest",
+   "args": [
+    {
+     "title": "Sperm flagellar beats, four octaves up",
+     "creator": "Chethan Dandebala Venkatarama",
+     "licence": "CC-BY-4.0",
+     "sources": [
+      {
+       "claim": "bio:HUMAN-SPERM-BEAT-VISCOUS",
+       "doi": "10.1093/humrep/dez056",
+       "values": [
+        10.0
+       ]
+      },
+      {
+       "claim": "bio:HUMAN-SPERM-BEAT-DILUTED-SEMEN",
+       "doi": "10.1093/humrep/dez056",
+       "values": [
+        19.0
+       ]
+      }
+     ]
+    },
+    [
+     {
+      "name": "viscous medium",
+      "mapping": {
+       "time": {
+        "speedup": 1.0,
+        "offset_s": 0.1
+       },
+       "pitch": {
+        "kind": "rhythm",
+        "octaves": 4
+       },
+       "gain_db": {
+        "kind": "constant",
+        "value": -9.0
+       },
+       "duration_s": {
+        "kind": "constant",
+        "value": 0.4
+       },
+       "instrument": {
+        "kind": "karplus_strong_tuned"
+       }
+      },
+      "times": [
+       0.0
+      ],
+      "values": [
+       10.0
+      ],
+      "claim": "bio:HUMAN-SPERM-BEAT-VISCOUS"
+     },
+     {
+      "name": "diluted semen",
+      "mapping": {
+       "time": {
+        "speedup": 1.0,
+        "offset_s": 0.6
+       },
+       "pitch": {
+        "kind": "rhythm",
+        "octaves": 4
+       },
+       "gain_db": {
+        "kind": "constant",
+        "value": -9.0
+       },
+       "duration_s": {
+        "kind": "constant",
+        "value": 0.4
+       },
+       "instrument": {
+        "kind": "karplus_strong_tuned"
+       },
+       "pan": {
+        "kind": "constant",
+        "value": 0.3
+       }
+      },
+      "times": [
+       0.0
+      ],
+      "values": [
+       19.0
+      ],
+      "claim": "bio:HUMAN-SPERM-BEAT-DILUTED-SEMEN"
+     }
+    ],
+    8000,
+    1
+   ],
+   "expected": {
+    "schema": "sonification-manifest/0.1-draft",
+    "title": "Sperm flagellar beats, four octaves up",
+    "creator": "Chethan Dandebala Venkatarama",
+    "licence": "CC-BY-4.0",
+    "software": {
+     "name": "sonification-core",
+     "version": "0.1.0"
+    },
+    "sources": [
+     {
+      "claim": "bio:HUMAN-SPERM-BEAT-VISCOUS",
+      "doi": "10.1093/humrep/dez056",
+      "values": [
+       10.0
+      ]
+     },
+     {
+      "claim": "bio:HUMAN-SPERM-BEAT-DILUTED-SEMEN",
+      "doi": "10.1093/humrep/dez056",
+      "values": [
+       19.0
+      ]
+     }
+    ],
+    "layers": [
+     {
+      "name": "viscous medium",
+      "claim": "bio:HUMAN-SPERM-BEAT-VISCOUS",
+      "mapping": {
+       "time": {
+        "offset_s": 0.1,
+        "speedup": 1.0
+       },
+       "pitch": {
+        "speedup": 1.0,
+        "kind": "rhythm",
+        "octaves": 4
+       },
+       "gain_db": {
+        "kind": "constant",
+        "value": -9.0
+       },
+       "pan": {
+        "kind": "constant",
+        "value": 0.0
+       },
+       "duration_s": {
+        "kind": "constant",
+        "value": 0.4
+       },
+       "instrument": {
+        "kind": "karplus_strong_tuned",
+        "decay": 0.996,
+        "pluck_brightness_hz": 2000.0
+       }
+      },
+      "events": [
+       {
+        "real_s": 0.0,
+        "value": 10.0,
+        "claim": "bio:HUMAN-SPERM-BEAT-VISCOUS",
+        "audio_s": 0.1,
+        "hz": 160.0,
+        "gain_db": -9.0,
+        "pan": 0.0,
+        "dur_s": 0.4,
+        "instrument": {
+         "kind": "karplus_strong_tuned",
+         "decay": 0.996,
+         "pluck_brightness_hz": 2000.0
+        }
+       }
+      ]
+     },
+     {
+      "name": "diluted semen",
+      "claim": "bio:HUMAN-SPERM-BEAT-DILUTED-SEMEN",
+      "mapping": {
+       "time": {
+        "offset_s": 0.6,
+        "speedup": 1.0
+       },
+       "pitch": {
+        "speedup": 1.0,
+        "kind": "rhythm",
+        "octaves": 4
+       },
+       "gain_db": {
+        "kind": "constant",
+        "value": -9.0
+       },
+       "pan": {
+        "kind": "constant",
+        "value": 0.3
+       },
+       "duration_s": {
+        "kind": "constant",
+        "value": 0.4
+       },
+       "instrument": {
+        "kind": "karplus_strong_tuned",
+        "decay": 0.996,
+        "pluck_brightness_hz": 2000.0
+       }
+      },
+      "events": [
+       {
+        "real_s": 0.0,
+        "value": 19.0,
+        "claim": "bio:HUMAN-SPERM-BEAT-DILUTED-SEMEN",
+        "audio_s": 0.6,
+        "hz": 304.0,
+        "gain_db": -9.0,
+        "pan": 0.3,
+        "dur_s": 0.4,
+        "instrument": {
+         "kind": "karplus_strong_tuned",
+         "decay": 0.996,
+         "pluck_brightness_hz": 2000.0
+        }
+       }
+      ]
+     }
+    ],
+    "render": {
+     "sample_rate": 8000,
+     "seed": 1,
+     "instruments": [
+      {
+       "kind": "karplus_strong_tuned",
+       "decay": 0.996,
+       "pluck_brightness_hz": 2000.0
+      }
+     ]
+    },
+    "audio": {
+     "encoding": "wav-pcm16",
+     "channels": 2,
+     "frames": 8000,
+     "peak": 0.3025281465105059,
+     "sha256": "216bbc9f5e126f31ca9be2d2569285c77a8a9104427dcf89203483d199709908"
+    }
+   },
+   "note": "two layers from two cited sources"
+  },
+  {
+   "claim": "sonify:MANIFEST",
+   "fn": "write_manifest",
+   "args": [
+    {
+     "title": "Synthetic chimes",
+     "creator": "Chethan Dandebala Venkatarama",
+     "licence": "CC0-1.0"
+    },
+    [
+     {
+      "name": "chimes",
+      "mapping": {
+       "time": {
+        "speedup": 100.0,
+        "offset_s": 0.05
+       },
+       "pitch": {
+        "kind": "midi",
+        "map": {
+         "kind": "linear",
+         "x_lo": 0.0,
+         "x_hi": 1.0,
+         "out_lo": 45.0,
+         "out_hi": 57.0,
+         "clamp": true
+        },
+        "scale": {
+         "root": 4,
+         "pitch_classes": [
+          0,
+          2,
+          4,
+          7,
+          9
+         ]
+        }
+       },
+       "gain_db": {
+        "kind": "constant",
+        "value": -6.0
+       },
+       "pan": {
+        "kind": "linear",
+        "x_lo": 0.0,
+        "x_hi": 1.0,
+        "out_lo": -0.6,
+        "out_hi": 0.6
+       },
+       "duration_s": {
+        "kind": "constant",
+        "value": 0.12
+       },
+       "instrument": {
+        "kind": "modal_chime",
+        "brightness": 0.8
+       }
+      },
+      "times": [
+       0.0,
+       17.0,
+       34.5,
+       52.0
+      ],
+      "values": [
+       0.2,
+       0.9,
+       0.5,
+       0.0
+      ]
+     }
+    ],
+    4000,
+    0
+   ],
+   "expected": {
+    "schema": "sonification-manifest/0.1-draft",
+    "title": "Synthetic chimes",
+    "creator": "Chethan Dandebala Venkatarama",
+    "licence": "CC0-1.0",
+    "software": {
+     "name": "sonification-core",
+     "version": "0.1.0"
+    },
+    "sources": [],
+    "layers": [
+     {
+      "name": "chimes",
+      "mapping": {
+       "time": {
+        "offset_s": 0.05,
+        "speedup": 100.0
+       },
+       "pitch": {
+        "kind": "midi",
+        "map": {
+         "clamp": true,
+         "kind": "linear",
+         "x_lo": 0.0,
+         "x_hi": 1.0,
+         "out_lo": 45.0,
+         "out_hi": 57.0
+        },
+        "scale": {
+         "root": 4,
+         "pitch_classes": [
+          0,
+          2,
+          4,
+          7,
+          9
+         ]
+        }
+       },
+       "gain_db": {
+        "kind": "constant",
+        "value": -6.0
+       },
+       "pan": {
+        "clamp": false,
+        "kind": "linear",
+        "x_lo": 0.0,
+        "x_hi": 1.0,
+        "out_lo": -0.6,
+        "out_hi": 0.6
+       },
+       "duration_s": {
+        "kind": "constant",
+        "value": 0.12
+       },
+       "instrument": {
+        "kind": "modal_chime",
+        "brightness": 0.8
+       }
+      },
+      "events": [
+       {
+        "real_s": 0.0,
+        "value": 0.2,
+        "audio_s": 0.05,
+        "hz": 123.47082531403103,
+        "gain_db": -6.0,
+        "pan": -0.36,
+        "dur_s": 0.12,
+        "instrument": {
+         "kind": "modal_chime",
+         "brightness": 0.8
+        }
+       },
+       {
+        "real_s": 17.0,
+        "value": 0.9,
+        "audio_s": 0.22,
+        "hz": 207.65234878997256,
+        "gain_db": -6.0,
+        "pan": 0.48,
+        "dur_s": 0.12,
+        "instrument": {
+         "kind": "modal_chime",
+         "brightness": 0.8
+        }
+       },
+       {
+        "real_s": 34.5,
+        "value": 0.5,
+        "audio_s": 0.395,
+        "hz": 164.81377845643496,
+        "gain_db": -6.0,
+        "pan": 0.0,
+        "dur_s": 0.12,
+        "instrument": {
+         "kind": "modal_chime",
+         "brightness": 0.8
+        }
+       },
+       {
+        "real_s": 52.0,
+        "value": 0.0,
+        "audio_s": 0.57,
+        "hz": 103.82617439498628,
+        "gain_db": -6.0,
+        "pan": -0.6,
+        "dur_s": 0.12,
+        "instrument": {
+         "kind": "modal_chime",
+         "brightness": 0.8
+        }
+       }
+      ]
+     }
+    ],
+    "render": {
+     "sample_rate": 4000,
+     "seed": 0,
+     "instruments": [
+      {
+       "kind": "modal_chime",
+       "brightness": 0.8
+      }
+     ]
+    },
+    "audio": {
+     "encoding": "wav-pcm16",
+     "channels": 2,
+     "frames": 2760,
+     "peak": 0.4766573844246428,
+     "sha256": "80faf3a6e47fec584a416a33eecf95e67c23bf7a2eb49ea816df9173748f18b8"
+    }
+   },
+   "note": "no sources: synthetic data"
+  }
+ ]
+}

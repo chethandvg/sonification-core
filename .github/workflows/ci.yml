@@ -1,0 +1,17 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  rust:
+    uses: chethandvg/.github/.github/workflows/rust-ci.yml@v1
+  python:
+    uses: chethandvg/.github/.github/workflows/py-bindings-ci.yml@v1
+  wasm:
+    uses: chethandvg/.github/.github/workflows/wasm-ci.yml@v1

@@ -1,0 +1,28 @@
+# Build output
+target/
+dist/
+pkg/
+node_modules/
+.lake/
+.astro/
+__pycache__/
+*.egg-info/
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# Libraries don't pin their dependencies; the WebAssembly bindings pin wasm-bindgen in Cargo.toml.
+Cargo.lock
+package-lock.json
+
+# Large media goes to GitHub releases and Zenodo, never into git.
+*.wav
+*.flac
+
+# Local agent and editor files
+.claude/
+CLAUDE.md
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

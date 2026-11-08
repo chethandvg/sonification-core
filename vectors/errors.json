@@ -1,0 +1,1866 @@
+{
+ "schema": "golden-vectors@1",
+ "description": "Invalid input is rejected with an error in every binding.",
+ "tolerance": {
+  "rel": 1e-12,
+  "abs": 1e-12
+ },
+ "cases": [
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "to_audio",
+   "args": [
+    {
+     "speedup": 0.0
+    },
+    1.0
+   ],
+   "error": true,
+   "note": "speedup must be > 0"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "to_audio",
+   "args": [
+    {
+     "speedup": -2.0,
+     "offset_s": 1.0
+    },
+    1.0
+   ],
+   "error": true,
+   "note": "a negative speedup"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "to_audio",
+   "args": [
+    {
+     "speedup": 0.5
+    },
+    1e+308
+   ],
+   "error": true,
+   "note": "an audio time beyond f64"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "to_real",
+   "args": [
+    {
+     "speedup": 2.0,
+     "start_s": 1.0
+    },
+    1.0
+   ],
+   "error": true,
+   "note": "an unknown field"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "map_value",
+   "args": [
+    {
+     "kind": "linear",
+     "x_lo": 1.0,
+     "x_hi": 1.0,
+     "out_lo": 0.0,
+     "out_hi": 1.0
+    },
+    1.0
+   ],
+   "error": true,
+   "note": "x_hi must differ from x_lo"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "map_value",
+   "args": [
+    {
+     "kind": "exponential",
+     "x_lo": 0.0,
+     "x_hi": 1.0,
+     "out_lo": 0.0,
+     "out_hi": 1.0
+    },
+    0.5
+   ],
+   "error": true,
+   "note": "out_lo must be > 0"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "map_value",
+   "args": [
+    {
+     "kind": "exponential",
+     "x_lo": 0.0,
+     "x_hi": 1.0,
+     "out_lo": 1.0,
+     "out_hi": -2.0
+    },
+    0.5
+   ],
+   "error": true,
+   "note": "out_hi must be > 0"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "map_value",
+   "args": [
+    {
+     "kind": "cubic",
+     "x_lo": 0.0
+    },
+    0.5
+   ],
+   "error": true,
+   "note": "an unknown kind"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "map_pitch",
+   "args": [
+    {
+     "kind": "hz",
+     "map": {
+      "kind": "linear",
+      "x_lo": 0.0,
+      "x_hi": 1.0,
+      "out_lo": 0.0,
+      "out_hi": 1.0
+     }
+    },
+    0.0
+   ],
+   "error": true,
+   "note": "0 Hz"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "map_pitch",
+   "args": [
+    {
+     "kind": "midi",
+     "map": {
+      "kind": "linear",
+      "x_lo": 0.0,
+      "x_hi": 1.0,
+      "out_lo": 0.0,
+      "out_hi": 1.0
+     },
+     "scale": {
+      "root": 12,
+      "pitch_classes": [
+       0
+      ]
+     }
+    },
+    0.5
+   ],
+   "error": true,
+   "note": "root"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "map_pitch",
+   "args": [
+    {
+     "kind": "rhythm"
+    },
+    -1.0
+   ],
+   "error": true,
+   "note": "a rhythm's frequency must be > 0"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "map_pitch",
+   "args": [
+    {
+     "kind": "rhythm",
+     "octaves": 2000
+    },
+    1.0
+   ],
+   "error": true,
+   "note": "2^2000 is not an f64"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "map_pitch",
+   "args": [
+    {
+     "kind": "rhythm",
+     "octaves": 0.5
+    },
+    1.0
+   ],
+   "error": true,
+   "note": "octaves must be whole"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "map_pitch",
+   "args": [
+    {
+     "kind": "fold",
+     "low_hz": 0.0
+    },
+    1.0
+   ],
+   "error": true,
+   "note": "low_hz must be > 0"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "quantise",
+   "args": [
+    {
+     "root": 0,
+     "pitch_classes": []
+    },
+    60.0
+   ],
+   "error": true,
+   "note": "no pitch classes"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "quantise",
+   "args": [
+    {
+     "root": 0,
+     "pitch_classes": [
+      12
+     ]
+    },
+    60.0
+   ],
+   "error": true,
+   "note": "a pitch class above 11"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "quantise",
+   "args": [
+    {
+     "root": 0,
+     "pitch_classes": [
+      0
+     ]
+    },
+    1e+300
+   ],
+   "error": true,
+   "note": "beyond 2^52"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "heard_hz",
+   "args": [
+    0.0,
+    600.0
+   ],
+   "error": true,
+   "note": "period_s must be > 0"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "heard_hz",
+   "args": [
+    600.0,
+    -1.0
+   ],
+   "error": true,
+   "note": "speedup must be > 0"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "audify",
+   "args": [
+    [
+     0.5,
+     0.5,
+     0.5
+    ],
+    1.0,
+    2.0,
+    100
+   ],
+   "error": true,
+   "note": "a constant series"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "audify",
+   "args": [
+    [
+     0.0,
+     0.0
+    ],
+    1.0,
+    2.0,
+    100
+   ],
+   "error": true,
+   "note": "silence is constant"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "audify",
+   "args": [
+    [
+     0.0,
+     0.0,
+     0.0,
+     1.0
+    ],
+    1.0,
+    150.0,
+    100
+   ],
+   "error": true,
+   "note": "the samples miss the change: all equal"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "audify",
+   "args": [
+    [
+     0.1,
+     0.1,
+     0.1,
+     0.1,
+     0.1,
+     0.1,
+     0.1,
+     0.1,
+     0.1,
+     0.1,
+     0.0
+    ],
+    1.0,
+    300.0,
+    100
+   ],
+   "error": true,
+   "note": "the change comes after the last sample"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "audify",
+   "args": [
+    [
+     1.0
+    ],
+    1.0,
+    2.0,
+    100
+   ],
+   "error": true,
+   "note": "at least two values"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "audify",
+   "args": [
+    [
+     0.0,
+     1.0
+    ],
+    0.0,
+    2.0,
+    100
+   ],
+   "error": true,
+   "note": "src_dt must be > 0"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "audify",
+   "args": [
+    [
+     0.0,
+     1.0
+    ],
+    1.0,
+    0.0,
+    100
+   ],
+   "error": true,
+   "note": "speedup must be > 0"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "audify",
+   "args": [
+    [
+     0.0,
+     1.0
+    ],
+    1.0,
+    2.0,
+    0
+   ],
+   "error": true,
+   "note": "sr must be >= 1"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "audify",
+   "args": [
+    [
+     0.0,
+     1.0
+    ],
+    1.0,
+    2.0,
+    -1
+   ],
+   "error": true,
+   "note": "a negative sample rate"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "sonify",
+   "args": [
+    {
+     "time": {
+      "speedup": 2.0
+     },
+     "pitch": {
+      "kind": "hz",
+      "map": {
+       "kind": "constant",
+       "value": 440.0
+      }
+     },
+     "duration_s": {
+      "kind": "constant",
+      "value": 0.1
+     },
+     "instrument": {
+      "kind": "modal_chime"
+     }
+    },
+    [
+     0.0,
+     1.0
+    ],
+    [
+     0.5
+    ],
+    null
+   ],
+   "error": true,
+   "note": "times and values differ in length"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "sonify",
+   "args": [
+    {
+     "time": {
+      "speedup": 2.0,
+      "offset_s": -1.0
+     },
+     "pitch": {
+      "kind": "hz",
+      "map": {
+       "kind": "constant",
+       "value": 440.0
+      }
+     },
+     "duration_s": {
+      "kind": "constant",
+      "value": 0.1
+     },
+     "instrument": {
+      "kind": "modal_chime"
+     }
+    },
+    [
+     0.0
+    ],
+    [
+     0.5
+    ],
+    null
+   ],
+   "error": true,
+   "note": "audio_s < 0"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "sonify",
+   "args": [
+    {
+     "time": {
+      "speedup": 2.0
+     },
+     "pitch": {
+      "kind": "hz",
+      "map": {
+       "kind": "constant",
+       "value": 440.0
+      }
+     },
+     "duration_s": {
+      "kind": "constant",
+      "value": 0.1
+     },
+     "instrument": {
+      "kind": "modal_chime"
+     },
+     "pan": {
+      "kind": "constant",
+      "value": 1.5
+     }
+    },
+    [
+     0.0
+    ],
+    [
+     0.5
+    ],
+    null
+   ],
+   "error": true,
+   "note": "pan beyond 1"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "sonify",
+   "args": [
+    {
+     "time": {
+      "speedup": 2.0
+     },
+     "pitch": {
+      "kind": "hz",
+      "map": {
+       "kind": "constant",
+       "value": 440.0
+      }
+     },
+     "duration_s": {
+      "kind": "constant",
+      "value": 0.0
+     },
+     "instrument": {
+      "kind": "modal_chime"
+     }
+    },
+    [
+     0.0
+    ],
+    [
+     0.5
+    ],
+    null
+   ],
+   "error": true,
+   "note": "a note of 0 s"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "sonify",
+   "args": [
+    {
+     "time": {
+      "speedup": 2.0
+     }
+    },
+    [
+     0.0
+    ],
+    [
+     0.5
+    ],
+    null
+   ],
+   "error": true,
+   "note": "a mapping without pitch"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "sonify",
+   "args": [
+    {
+     "time": {
+      "speedup": 2.0
+     },
+     "pitch": {
+      "kind": "hz",
+      "map": {
+       "kind": "constant",
+       "value": 440.0
+      }
+     },
+     "duration_s": {
+      "kind": "constant",
+      "value": 0.1
+     },
+     "instrument": {
+      "kind": "modal_chime"
+     },
+     "pan": {
+      "kind": "constant",
+      "value": 7.0
+     }
+    },
+    [],
+    [],
+    null
+   ],
+   "error": true,
+   "note": "no points, but a constant pan beyond 1"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "sonify",
+   "args": [
+    {
+     "time": {
+      "speedup": 2.0
+     },
+     "pitch": {
+      "kind": "fold",
+      "low_hz": 1e+308
+     },
+     "duration_s": {
+      "kind": "constant",
+      "value": 0.1
+     },
+     "instrument": {
+      "kind": "modal_chime"
+     }
+    },
+    [],
+    [],
+    null
+   ],
+   "error": true,
+   "note": "no points, but low_hz above f64::MAX / 2"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "sonify",
+   "args": [
+    {
+     "time": {
+      "speedup": 2.0
+     },
+     "pitch": {
+      "kind": "fold",
+      "low_hz": 1e-310
+     },
+     "duration_s": {
+      "kind": "constant",
+      "value": 0.1
+     },
+     "instrument": {
+      "kind": "modal_chime"
+     }
+    },
+    [],
+    [],
+    null
+   ],
+   "error": true,
+   "note": "no points, but a subnormal low_hz"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "sonify",
+   "args": [
+    {
+     "time": {
+      "speedup": 2.0
+     },
+     "pitch": {
+      "kind": "rhythm",
+      "octaves": 5000
+     },
+     "duration_s": {
+      "kind": "constant",
+      "value": 0.1
+     },
+     "instrument": {
+      "kind": "modal_chime"
+     }
+    },
+    [],
+    [],
+    null
+   ],
+   "error": true,
+   "note": "no points, but an octave count no frequency survives"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "sonify",
+   "args": [
+    {
+     "time": {
+      "speedup": 2.0
+     },
+     "pitch": {
+      "kind": "rhythm",
+      "speedup": 1e-320,
+      "octaves": -1074
+     },
+     "duration_s": {
+      "kind": "constant",
+      "value": 0.1
+     },
+     "instrument": {
+      "kind": "modal_chime"
+     }
+    },
+    [],
+    [],
+    null
+   ],
+   "error": true,
+   "note": "no points, but every heard frequency shifted to 0"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "sonify",
+   "args": [
+    {
+     "time": {
+      "speedup": 2.0
+     },
+     "pitch": {
+      "kind": "midi",
+      "map": {
+       "kind": "constant",
+       "value": 1000000.0
+      }
+     },
+     "duration_s": {
+      "kind": "constant",
+      "value": 0.1
+     },
+     "instrument": {
+      "kind": "modal_chime"
+     }
+    },
+    [],
+    [],
+    null
+   ],
+   "error": true,
+   "note": "no points, but a constant MIDI note beyond f64"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "sonify",
+   "args": [
+    {
+     "time": {
+      "speedup": 2.0
+     },
+     "pitch": {
+      "kind": "hz",
+      "map": {
+       "kind": "constant",
+       "value": 440.0
+      }
+     },
+     "duration_s": {
+      "kind": "constant",
+      "value": 0.1
+     },
+     "instrument": {
+      "kind": "modal_chime"
+     },
+     "gain_db": {
+      "kind": "constant",
+      "value": 1000000.0
+     }
+    },
+    [],
+    [],
+    null
+   ],
+   "error": true,
+   "note": "no points, but a gain beyond f64"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "render",
+   "args": [
+    [
+     {
+      "real_s": 0.0,
+      "value": 0.0,
+      "audio_s": -0.5,
+      "hz": 440.0,
+      "gain_db": -6.0,
+      "pan": 0.0,
+      "dur_s": 0.01,
+      "instrument": {
+       "kind": "modal_chime"
+      }
+     }
+    ],
+    8000,
+    0
+   ],
+   "error": true,
+   "note": "a note before 0 s"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "render",
+   "args": [
+    [
+     {
+      "real_s": 0.0,
+      "value": 0.0,
+      "audio_s": 0.0,
+      "hz": 440.0,
+      "gain_db": -6.0,
+      "pan": 0.0,
+      "dur_s": 0.01,
+      "instrument": {
+       "kind": "karplus_strong",
+       "decay": 2.0
+      }
+     }
+    ],
+    8000,
+    0
+   ],
+   "error": true,
+   "note": "decay > 1"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "render",
+   "args": [
+    [
+     {
+      "real_s": 0.0,
+      "value": 0.0,
+      "audio_s": 0.0,
+      "hz": 440.0,
+      "gain_db": -6.0,
+      "pan": 0.0,
+      "dur_s": 0.01,
+      "instrument": {
+       "kind": "modal_chime"
+      }
+     }
+    ],
+    0,
+    0
+   ],
+   "error": true,
+   "note": "sr must be >= 1"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "render",
+   "args": [
+    [],
+    0,
+    0
+   ],
+   "error": true,
+   "note": "sr must be >= 1, even with no events"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "render",
+   "args": [
+    [
+     {
+      "real_s": 0.0,
+      "value": 0.0,
+      "audio_s": 0.0,
+      "hz": 440.0,
+      "gain_db": -6.0,
+      "pan": 0.0,
+      "dur_s": 0.01,
+      "instrument": {
+       "kind": "modal_chime"
+      }
+     }
+    ],
+    8000,
+    -1
+   ],
+   "error": true,
+   "note": "a negative seed"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "render",
+   "args": [
+    [
+     {
+      "real_s": 0.0,
+      "value": 0.0,
+      "audio_s": 0.0,
+      "hz": 440.0,
+      "gain_db": -6.0,
+      "pan": 0.0,
+      "dur_s": 0.01,
+      "instrument": {
+       "kind": "modal_chime"
+      }
+     }
+    ],
+    8000,
+    9007199254740992
+   ],
+   "error": true,
+   "note": "a seed above 2^53 - 1"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "write_manifest",
+   "args": [
+    {
+     "title": "",
+     "creator": "y",
+     "licence": "CC0-1.0",
+     "sources": [
+      {
+       "claim": "a:B",
+       "values": []
+      }
+     ]
+    },
+    [
+     {
+      "name": "n",
+      "mapping": {
+       "time": {
+        "speedup": 2.0
+       },
+       "pitch": {
+        "kind": "hz",
+        "map": {
+         "kind": "constant",
+         "value": 440.0
+        }
+       },
+       "duration_s": {
+        "kind": "constant",
+        "value": 0.1
+       },
+       "instrument": {
+        "kind": "modal_chime"
+       }
+      },
+      "times": [
+       0.0
+      ],
+      "values": [
+       0.5
+      ]
+     }
+    ],
+    8000,
+    0
+   ],
+   "error": true,
+   "note": "an empty title"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "write_manifest",
+   "args": [
+    {
+     "title": "\u001c",
+     "creator": "y",
+     "licence": "CC0-1.0",
+     "sources": [
+      {
+       "claim": "a:B",
+       "values": []
+      }
+     ]
+    },
+    [
+     {
+      "name": "n",
+      "mapping": {
+       "time": {
+        "speedup": 2.0
+       },
+       "pitch": {
+        "kind": "hz",
+        "map": {
+         "kind": "constant",
+         "value": 440.0
+        }
+       },
+       "duration_s": {
+        "kind": "constant",
+        "value": 0.1
+       },
+       "instrument": {
+        "kind": "modal_chime"
+       }
+      },
+      "times": [
+       0.0
+      ],
+      "values": [
+       0.5
+      ]
+     }
+    ],
+    8000,
+    0
+   ],
+   "error": true,
+   "note": "a control character (U+001C)"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "write_manifest",
+   "args": [
+    {
+     "title": "x",
+     "creator": "a\tb",
+     "licence": "CC0-1.0",
+     "sources": [
+      {
+       "claim": "a:B",
+       "values": []
+      }
+     ]
+    },
+    [
+     {
+      "name": "n",
+      "mapping": {
+       "time": {
+        "speedup": 2.0
+       },
+       "pitch": {
+        "kind": "hz",
+        "map": {
+         "kind": "constant",
+         "value": 440.0
+        }
+       },
+       "duration_s": {
+        "kind": "constant",
+        "value": 0.1
+       },
+       "instrument": {
+        "kind": "modal_chime"
+       }
+      },
+      "times": [
+       0.0
+      ],
+      "values": [
+       0.5
+      ]
+     }
+    ],
+    8000,
+    0
+   ],
+   "error": true,
+   "note": "a tab"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "write_manifest",
+   "args": [
+    {
+     "title": "x",
+     "creator": "y",
+     "licence": "CC0-1.0",
+     "sources": [
+      {
+       "claim": "a:\u001fB",
+       "values": []
+      }
+     ]
+    },
+    [
+     {
+      "name": "n",
+      "mapping": {
+       "time": {
+        "speedup": 2.0
+       },
+       "pitch": {
+        "kind": "hz",
+        "map": {
+         "kind": "constant",
+         "value": 440.0
+        }
+       },
+       "duration_s": {
+        "kind": "constant",
+        "value": 0.1
+       },
+       "instrument": {
+        "kind": "modal_chime"
+       }
+      },
+      "times": [
+       0.0
+      ],
+      "values": [
+       0.5
+      ]
+     }
+    ],
+    8000,
+    0
+   ],
+   "error": true,
+   "note": "a claim holding U+001F"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "write_manifest",
+   "args": [
+    {
+     "title": "x",
+     "creator": "y",
+     "licence": "CC0-1.0",
+     "sources": [
+      {
+       "claim": "a:B",
+       "values": []
+      }
+     ]
+    },
+    [
+     {
+      "name": "n",
+      "mapping": {
+       "time": {
+        "speedup": 2.0
+       },
+       "pitch": {
+        "kind": "hz",
+        "map": {
+         "kind": "constant",
+         "value": 440.0
+        }
+       },
+       "duration_s": {
+        "kind": "constant",
+        "value": 0.1
+       },
+       "instrument": {
+        "kind": "modal_chime"
+       }
+      },
+      "times": [
+       0.0
+      ],
+      "values": [
+       0.5
+      ]
+     }
+    ],
+    0,
+    0
+   ],
+   "error": true,
+   "note": "sr must be >= 1"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "write_manifest",
+   "args": [
+    {
+     "title": "x",
+     "creator": "y",
+     "licence": "CC0-1.0",
+     "sources": [
+      {
+       "claim": "a:B",
+       "values": []
+      }
+     ]
+    },
+    [
+     {
+      "name": "n",
+      "mapping": {
+       "time": {
+        "speedup": 2.0
+       },
+       "pitch": {
+        "kind": "hz",
+        "map": {
+         "kind": "constant",
+         "value": 440.0
+        }
+       },
+       "duration_s": {
+        "kind": "constant",
+        "value": 0.1
+       },
+       "instrument": {
+        "kind": "modal_chime"
+       }
+      },
+      "times": [
+       0.0
+      ],
+      "values": [
+       0.5
+      ],
+      "claim": "c:D"
+     }
+    ],
+    8000,
+    0
+   ],
+   "error": true,
+   "note": "a claim that is not a source"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "write_manifest",
+   "args": [
+    {
+     "title": "x",
+     "creator": "y",
+     "licence": "CC0-1.0",
+     "sources": [
+      {
+       "claim": "a:B",
+       "values": []
+      }
+     ]
+    },
+    [],
+    8000,
+    0
+   ],
+   "error": true,
+   "note": "nothing to render"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "write_manifest",
+   "args": [
+    {
+     "title": "x",
+     "creator": "y",
+     "licence": "CC0-1.0",
+     "sources": [
+      {
+       "claim": "a:B",
+       "values": []
+      }
+     ]
+    },
+    [
+     {
+      "name": "n",
+      "mapping": {
+       "time": {
+        "speedup": 2.0
+       },
+       "pitch": {
+        "kind": "hz",
+        "map": {
+         "kind": "constant",
+         "value": 440.0
+        }
+       },
+       "duration_s": {
+        "kind": "constant",
+        "value": 0.1
+       },
+       "instrument": {
+        "kind": "modal_chime"
+       }
+      },
+      "times": [
+       0.0
+      ],
+      "values": [
+       0.5
+      ]
+     },
+     {
+      "name": "e",
+      "mapping": {
+       "time": {
+        "speedup": -5.0
+       },
+       "pitch": {
+        "kind": "hz",
+        "map": {
+         "kind": "constant",
+         "value": 440.0
+        }
+       },
+       "duration_s": {
+        "kind": "constant",
+        "value": 0.1
+       },
+       "instrument": {
+        "kind": "modal_chime"
+       }
+      },
+      "times": [],
+      "values": []
+     }
+    ],
+    8000,
+    0
+   ],
+   "error": true,
+   "note": "a layer without points still has its mapping checked"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "write_manifest",
+   "args": [
+    {
+     "title": "x",
+     "creator": "y",
+     "licence": "CC0-1.0",
+     "sources": [
+      {
+       "claim": "a:B",
+       "doi": "doi 10.1/x",
+       "values": []
+      }
+     ]
+    },
+    [
+     {
+      "name": "n",
+      "mapping": {
+       "time": {
+        "speedup": 2.0
+       },
+       "pitch": {
+        "kind": "hz",
+        "map": {
+         "kind": "constant",
+         "value": 440.0
+        }
+       },
+       "duration_s": {
+        "kind": "constant",
+        "value": 0.1
+       },
+       "instrument": {
+        "kind": "modal_chime"
+       }
+      },
+      "times": [
+       0.0
+      ],
+      "values": [
+       0.5
+      ]
+     }
+    ],
+    8000,
+    0
+   ],
+   "error": true,
+   "note": "DOI"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "write_manifest",
+   "args": [
+    {
+     "title": "x",
+     "creator": "y",
+     "licence": "CC0-1.0",
+     "sources": [
+      {
+       "claim": "no colon",
+       "values": []
+      }
+     ]
+    },
+    [
+     {
+      "name": "n",
+      "mapping": {
+       "time": {
+        "speedup": 2.0
+       },
+       "pitch": {
+        "kind": "hz",
+        "map": {
+         "kind": "constant",
+         "value": 440.0
+        }
+       },
+       "duration_s": {
+        "kind": "constant",
+        "value": 0.1
+       },
+       "instrument": {
+        "kind": "modal_chime"
+       }
+      },
+      "times": [
+       0.0
+      ],
+      "values": [
+       0.5
+      ]
+     }
+    ],
+    8000,
+    0
+   ],
+   "error": true,
+   "note": "claim"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "detect_onsets",
+   "args": [
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    8000,
+    0.001,
+    0.02,
+    6.0,
+    0.05,
+    -90.0
+   ],
+   "error": true,
+   "note": "not whole frames"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "detect_onsets",
+   "args": [
+    [
+     0.0,
+     0.0
+    ],
+    0,
+    0.001,
+    0.02,
+    6.0,
+    0.05,
+    -90.0
+   ],
+   "error": true,
+   "note": "sr must be >= 1"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "detect_onsets",
+   "args": [
+    [
+     0.0,
+     0.0
+    ],
+    8000,
+    1e-06,
+    0.02,
+    6.0,
+    0.05,
+    -90.0
+   ],
+   "error": true,
+   "note": "a hop shorter than a sample"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "detect_onsets",
+   "args": [
+    [
+     0.0,
+     0.0
+    ],
+    8000,
+    1000000000.0,
+    0.02,
+    6.0,
+    0.05,
+    -90.0
+   ],
+   "error": true,
+   "note": "a hop beyond MAX_SAMPLES"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "detect_onsets",
+   "args": [
+    [
+     0.0,
+     0.0
+    ],
+    8000,
+    0.001,
+    1000000000.0,
+    6.0,
+    0.05,
+    -90.0
+   ],
+   "error": true,
+   "note": "a window beyond MAX_SAMPLES"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "detect_onsets",
+   "args": [
+    [
+     0.0,
+     0.0
+    ],
+    8000,
+    0.001,
+    0.02,
+    6.0,
+    -0.05,
+    -90.0
+   ],
+   "error": true,
+   "note": "a negative min_gap_s"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "detect_onsets",
+   "args": [
+    [
+     0.0,
+     0.0
+    ],
+    8000,
+    0.001,
+    0.02,
+    6.0,
+    0.05,
+    -4000.0
+   ],
+   "error": true,
+   "note": "a floor of 0"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "verify",
+   "args": [
+    {
+     "schema": "sonification-manifest/0.1-draft",
+     "title": "Synthetic chimes",
+     "creator": "Chethan Dandebala Venkatarama",
+     "licence": "CC0-1.0",
+     "software": {
+      "name": "sonification-core",
+      "version": "0.1.0"
+     },
+     "sources": [],
+     "layers": [
+      {
+       "name": "chimes",
+       "mapping": {
+        "time": {
+         "offset_s": 0.05,
+         "speedup": 100.0
+        },
+        "pitch": {
+         "kind": "midi",
+         "map": {
+          "clamp": true,
+          "kind": "linear",
+          "x_lo": 0.0,
+          "x_hi": 1.0,
+          "out_lo": 45.0,
+          "out_hi": 57.0
+         },
+         "scale": {
+          "root": 4,
+          "pitch_classes": [
+           0,
+           2,
+           4,
+           7,
+           9
+          ]
+         }
+        },
+        "gain_db": {
+         "kind": "constant",
+         "value": -6.0
+        },
+        "pan": {
+         "clamp": false,
+         "kind": "linear",
+         "x_lo": 0.0,
+         "x_hi": 1.0,
+         "out_lo": -0.6,
+         "out_hi": 0.6
+        },
+        "duration_s": {
+         "kind": "constant",
+         "value": 0.12
+        },
+        "instrument": {
+         "kind": "modal_chime",
+         "brightness": 0.8
+        }
+       },
+       "events": [
+        {
+         "real_s": 0.0,
+         "value": 0.2,
+         "audio_s": 0.05,
+         "hz": 123.47082531403103,
+         "gain_db": -6.0,
+         "pan": -0.36,
+         "dur_s": 0.12,
+         "instrument": {
+          "kind": "modal_chime",
+          "brightness": 0.8
+         }
+        },
+        {
+         "real_s": 17.0,
+         "value": 0.9,
+         "audio_s": 0.22,
+         "hz": 207.65234878997256,
+         "gain_db": -6.0,
+         "pan": 0.48,
+         "dur_s": 0.12,
+         "instrument": {
+          "kind": "modal_chime",
+          "brightness": 0.8
+         }
+        },
+        {
+         "real_s": 34.5,
+         "value": 0.5,
+         "audio_s": 0.395,
+         "hz": 164.81377845643496,
+         "gain_db": -6.0,
+         "pan": 0.0,
+         "dur_s": 0.12,
+         "instrument": {
+          "kind": "modal_chime",
+          "brightness": 0.8
+         }
+        },
+        {
+         "real_s": 52.0,
+         "value": 0.0,
+         "audio_s": 0.57,
+         "hz": 103.82617439498628,
+         "gain_db": -6.0,
+         "pan": -0.6,
+         "dur_s": 0.12,
+         "instrument": {
+          "kind": "modal_chime",
+          "brightness": 0.8
+         }
+        }
+       ]
+      }
+     ],
+     "render": {
+      "sample_rate": 4000,
+      "seed": 0,
+      "instruments": [
+       {
+        "kind": "modal_chime",
+        "brightness": 0.8
+       }
+      ]
+     },
+     "audio": {
+      "encoding": "wav-pcm16",
+      "channels": 2,
+      "frames": 2760,
+      "peak": 0.4766573844246428,
+      "sha256": "80faf3a6e47fec584a416a33eecf95e67c23bf7a2eb49ea816df9173748f18b8"
+     }
+    },
+    [
+     0.0,
+     0.0
+    ],
+    -0.001,
+    0.001,
+    0.02,
+    6.0,
+    0.05,
+    -90.0
+   ],
+   "error": true,
+   "note": "tolerance"
+  },
+  {
+   "claim": "sonify:INPUT-VALIDATION",
+   "fn": "verify_wav",
+   "args": [
+    {
+     "schema": "sonification-manifest/0.1-draft",
+     "title": "Synthetic chimes",
+     "creator": "Chethan Dandebala Venkatarama",
+     "licence": "CC0-1.0",
+     "software": {
+      "name": "sonification-core",
+      "version": "0.1.0"
+     },
+     "sources": [],
+     "layers": [
+      {
+       "name": "chimes",
+       "mapping": {
+        "time": {
+         "offset_s": 0.05,
+         "speedup": 100.0
+        },
+        "pitch": {
+         "kind": "midi",
+         "map": {
+          "clamp": true,
+          "kind": "linear",
+          "x_lo": 0.0,
+          "x_hi": 1.0,
+          "out_lo": 45.0,
+          "out_hi": 57.0
+         },
+         "scale": {
+          "root": 4,
+          "pitch_classes": [
+           0,
+           2,
+           4,
+           7,
+           9
+          ]
+         }
+        },
+        "gain_db": {
+         "kind": "constant",
+         "value": -6.0
+        },
+        "pan": {
+         "clamp": false,
+         "kind": "linear",
+         "x_lo": 0.0,
+         "x_hi": 1.0,
+         "out_lo": -0.6,
+         "out_hi": 0.6
+        },
+        "duration_s": {
+         "kind": "constant",
+         "value": 0.12
+        },
+        "instrument": {
+         "kind": "modal_chime",
+         "brightness": 0.8
+        }
+       },
+       "events": [
+        {
+         "real_s": 0.0,
+         "value": 0.2,
+         "audio_s": 0.05,
+         "hz": 123.47082531403103,
+         "gain_db": -6.0,
+         "pan": -0.36,
+         "dur_s": 0.12,
+         "instrument": {
+          "kind": "modal_chime",
+          "brightness": 0.8
+         }
+        },
+        {
+         "real_s": 17.0,
+         "value": 0.9,
+         "audio_s": 0.22,
+         "hz": 207.65234878997256,
+         "gain_db": -6.0,
+         "pan": 0.48,
+         "dur_s": 0.12,
+         "instrument": {
+          "kind": "modal_chime",
+          "brightness": 0.8
+         }
+        },
+        {
+         "real_s": 34.5,
+         "value": 0.5,
+         "audio_s": 0.395,
+         "hz": 164.81377845643496,
+         "gain_db": -6.0,
+         "pan": 0.0,
+         "dur_s": 0.12,
+         "instrument": {
+          "kind": "modal_chime",
+          "brightness": 0.8
+         }
+        },
+        {
+         "real_s": 52.0,
+         "value": 0.0,
+         "audio_s": 0.57,
+         "hz": 103.82617439498628,
+         "gain_db": -6.0,
+         "pan": -0.6,
+         "dur_s": 0.12,
+         "instrument": {
+          "kind": "modal_chime",
+          "brightness": 0.8
+         }
+        }
+       ]
+      }
+     ],
+     "render": {
+      "sample_rate": 4000,
+      "seed": 0,
+      "instruments": [
+       {
+        "kind": "modal_chime",
+        "brightness": 0.8
+       }
+      ]
+     },
+     "audio": {
+      "encoding": "wav-pcm16",
+      "channels": 2,
+      "frames": 2760,
+      "peak": 0.4766573844246428,
+      "sha256": "80faf3a6e47fec584a416a33eecf95e67c23bf7a2eb49ea816df9173748f18b8"
+     }
+    },
+    [
+     82,
+     73,
+     70,
+     70
+    ],
+    0.002,
+    0.001,
+    0.02,
+    6.0,
+    0.05,
+    -90.0
+   ],
+   "error": true,
+   "note": "not a WAV file"
+  }
+ ]
+}

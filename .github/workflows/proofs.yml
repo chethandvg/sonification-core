@@ -1,0 +1,16 @@
+name: proofs
+
+on:
+  push:
+    branches: [main]
+    paths: ["proofs/**", "claims.yaml", ".github/workflows/proofs.yml"]
+  pull_request:
+    paths: ["proofs/**", "claims.yaml", ".github/workflows/proofs.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lean:
+    uses: chethandvg/.github/.github/workflows/lean-check.yml@v1

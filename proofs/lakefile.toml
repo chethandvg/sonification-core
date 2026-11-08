@@ -1,0 +1,24 @@
+name = "sonification_core"
+version = "0.1.0"
+defaultTargets = ["SonificationCore"]
+
+[leanOptions]
+autoImplicit = false
+relaxedAutoImplicit = false
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.35.0"
+
+# pitch-math's proofs (and, through them, rhythm-units'): the octave shift reuses
+# PitchMath.octave_transpose_ratios, and the time map RhythmUnits.scalePeriod.
+[[require]]
+name = "pitch_math"
+git = "https://github.com/chethandvg/pitch-math"
+rev = "v0.1.1"
+subDir = "proofs"
+# Local form: path = "../../pitch-math/proofs"
+
+[[lean_lib]]
+name = "SonificationCore"

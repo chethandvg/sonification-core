@@ -1,0 +1,244 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/chethandvg/sonification-core/blob/v0.1.0/schema/manifest.schema.json",
+  "title": "sonification-manifest/0.1-draft",
+  "description": "A sonification manifest as sonification-core writes it: a rendered piece's title, creator, audio licence, software, data sources, every mapping constant, every event, the render settings and the SHA-256 of the 16-bit PCM WAV file. A draft; the open standard is planned for the sonification-manifest repository.",
+  "type": "object",
+  "required": ["schema", "title", "creator", "licence", "software", "sources", "layers", "render", "audio"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": "sonification-manifest/0.1-draft" },
+    "title": { "$ref": "#/$defs/text" },
+    "creator": { "$ref": "#/$defs/text" },
+    "licence": { "$ref": "#/$defs/text", "description": "The audio's licence, as an SPDX identifier such as CC-BY-4.0." },
+    "software": {
+      "type": "object",
+      "required": ["name", "version"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "$ref": "#/$defs/text" },
+        "version": { "$ref": "#/$defs/text" }
+      }
+    },
+    "sources": { "type": "array", "items": { "$ref": "#/$defs/source" } },
+    "layers": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/layer" } },
+    "render": {
+      "type": "object",
+      "required": ["sample_rate", "seed", "instruments"],
+      "additionalProperties": false,
+      "properties": {
+        "sample_rate": { "type": "integer", "minimum": 1, "maximum": 4294967295 },
+        "seed": { "type": "integer", "minimum": 0, "maximum": 9007199254740991, "description": "At most 2^53 - 1, so that JavaScript reads it exactly. Event i (from 0) plucks strings with seed + i + 1; the WAV dither uses seed." },
+        "instruments": { "type": "array", "items": { "$ref": "#/$defs/instrument" } }
+      }
+    },
+    "audio": {
+      "type": "object",
+      "required": ["encoding", "channels", "frames", "peak", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "encoding": { "const": "wav-pcm16" },
+        "channels": { "const": 2 },
+        "frames": { "type": "integer", "minimum": 0 },
+        "peak": { "type": "number", "minimum": 0, "description": "The largest absolute sample of the render before it was written; above 1, the WAV file is clipped." },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}(?![\\s\\S])", "description": "SHA-256 of the whole WAV file, header included." }
+      }
+    }
+  },
+  "$defs": {
+    "text": {
+      "type": "string",
+      "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f]*[^\\u0000-\\u0020\\u007f-\\u00a0\\u1680\\u2000-\\u200a\\u2028-\\u2029\\u202f\\u205f\\u3000][^\\u0000-\\u001f\\u007f-\\u009f]*(?![\\s\\S])",
+      "description": "Text with no control characters (Unicode Cc) that is not all blank. Blank characters are the control characters and white space (Unicode White_Space), listed by code point so that no regular-expression dialect's own idea of white space enters. Every pattern here ends in (?![\\s\\S]), the end of the text in ECMA-262 and in Python's re alike; $ would let Python's re (which jsonschema uses) also match before a final line feed."
+    },
+    "claim": {
+      "type": "string",
+      "pattern": "^[^\\u0000-\\u0020\\u007f-\\u00a0\\u1680\\u2000-\\u200a\\u2028-\\u2029\\u202f\\u205f\\u3000]*:[^\\u0000-\\u0020\\u007f-\\u00a0\\u1680\\u2000-\\u200a\\u2028-\\u2029\\u202f\\u205f\\u3000]*(?![\\s\\S])",
+      "description": "A claim id, prefix:NAME, with no blank characters."
+    },
+    "source": {
+      "type": "object",
+      "required": ["claim", "values"],
+      "additionalProperties": false,
+      "properties": {
+        "claim": { "$ref": "#/$defs/claim" },
+        "doi": {
+          "type": "string",
+          "pattern": "^10\\.[^\\u0000-\\u0020\\u007f-\\u00a0\\u1680\\u2000-\\u200a\\u2028-\\u2029\\u202f\\u205f\\u3000]*/[^\\u0000-\\u0020\\u007f-\\u00a0\\u1680\\u2000-\\u200a\\u2028-\\u2029\\u202f\\u205f\\u3000]*(?![\\s\\S])"
+        },
+        "values": { "type": "array", "items": { "type": "number" } }
+      }
+    },
+    "layer": {
+      "type": "object",
+      "required": ["name", "mapping", "events"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "claim": { "$ref": "#/$defs/claim" },
+        "mapping": { "$ref": "#/$defs/mapping" },
+        "events": { "type": "array", "items": { "$ref": "#/$defs/event" } }
+      }
+    },
+    "event": {
+      "type": "object",
+      "required": ["real_s", "value", "audio_s", "hz", "gain_db", "pan", "dur_s", "instrument"],
+      "additionalProperties": false,
+      "properties": {
+        "real_s": { "type": "number" },
+        "value": { "type": "number" },
+        "claim": { "$ref": "#/$defs/claim" },
+        "audio_s": { "type": "number", "minimum": 0 },
+        "hz": { "type": "number", "exclusiveMinimum": 0 },
+        "gain_db": { "type": "number" },
+        "pan": { "type": "number", "minimum": -1, "maximum": 1 },
+        "dur_s": { "type": "number", "exclusiveMinimum": 0 },
+        "instrument": { "$ref": "#/$defs/instrument" }
+      }
+    },
+    "mapping": {
+      "type": "object",
+      "required": ["time", "pitch", "gain_db", "pan", "duration_s", "instrument"],
+      "additionalProperties": false,
+      "properties": {
+        "time": {
+          "type": "object",
+          "required": ["speedup", "offset_s"],
+          "additionalProperties": false,
+          "properties": {
+            "speedup": { "type": "number", "exclusiveMinimum": 0 },
+            "offset_s": { "type": "number" }
+          }
+        },
+        "pitch": { "$ref": "#/$defs/pitch_map" },
+        "gain_db": { "$ref": "#/$defs/param_map" },
+        "pan": { "$ref": "#/$defs/param_map" },
+        "duration_s": { "$ref": "#/$defs/param_map" },
+        "instrument": { "$ref": "#/$defs/instrument" }
+      }
+    },
+    "param_map": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["kind", "value"],
+          "additionalProperties": false,
+          "properties": { "kind": { "const": "constant" }, "value": { "type": "number" } }
+        },
+        {
+          "type": "object",
+          "required": ["kind", "x_lo", "x_hi", "out_lo", "out_hi", "clamp"],
+          "additionalProperties": false,
+          "properties": {
+            "kind": { "const": "linear" },
+            "x_lo": { "type": "number" },
+            "x_hi": { "type": "number" },
+            "out_lo": { "type": "number" },
+            "out_hi": { "type": "number" },
+            "clamp": { "type": "boolean" }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["kind", "x_lo", "x_hi", "out_lo", "out_hi", "clamp"],
+          "additionalProperties": false,
+          "properties": {
+            "kind": { "const": "exponential" },
+            "x_lo": { "type": "number" },
+            "x_hi": { "type": "number" },
+            "out_lo": { "type": "number", "exclusiveMinimum": 0 },
+            "out_hi": { "type": "number", "exclusiveMinimum": 0 },
+            "clamp": { "type": "boolean" }
+          }
+        }
+      ]
+    },
+    "scale": {
+      "type": "object",
+      "required": ["root", "pitch_classes"],
+      "additionalProperties": false,
+      "properties": {
+        "root": { "type": "integer", "minimum": 0, "maximum": 11 },
+        "pitch_classes": { "type": "array", "minItems": 1, "items": { "type": "integer", "minimum": 0, "maximum": 11 } }
+      }
+    },
+    "pitch_map": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["kind", "map"],
+          "additionalProperties": false,
+          "properties": { "kind": { "const": "hz" }, "map": { "$ref": "#/$defs/param_map" } }
+        },
+        {
+          "type": "object",
+          "required": ["kind", "map", "scale"],
+          "additionalProperties": false,
+          "properties": {
+            "kind": { "const": "midi" },
+            "map": { "$ref": "#/$defs/param_map" },
+            "scale": { "oneOf": [{ "$ref": "#/$defs/scale" }, { "type": "null" }] }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["kind", "speedup", "octaves"],
+          "additionalProperties": false,
+          "properties": {
+            "kind": { "const": "rhythm" },
+            "speedup": { "type": "number", "exclusiveMinimum": 0 },
+            "octaves": { "type": "integer" }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["kind", "speedup", "low_hz"],
+          "additionalProperties": false,
+          "properties": {
+            "kind": { "const": "fold" },
+            "speedup": { "type": "number", "exclusiveMinimum": 0 },
+            "low_hz": { "type": "number", "exclusiveMinimum": 0 }
+          }
+        }
+      ]
+    },
+    "instrument": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["kind", "brightness"],
+          "additionalProperties": false,
+          "properties": { "kind": { "const": "modal_chime" }, "brightness": { "type": "number" } }
+        },
+        {
+          "type": "object",
+          "required": ["kind", "ratio", "index"],
+          "additionalProperties": false,
+          "properties": { "kind": { "const": "fm_bell" }, "ratio": { "type": "number" }, "index": { "type": "number" } }
+        },
+        {
+          "type": "object",
+          "required": ["kind", "decay", "pluck_brightness_hz"],
+          "additionalProperties": false,
+          "properties": {
+            "kind": { "enum": ["karplus_strong", "karplus_strong_tuned"] },
+            "decay": { "type": "number", "minimum": 0, "maximum": 1 },
+            "pluck_brightness_hz": { "oneOf": [{ "type": "number", "exclusiveMinimum": 0 }, { "type": "null" }] }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["kind", "vibrato_hz", "vibrato_cents"],
+          "additionalProperties": false,
+          "properties": { "kind": { "const": "soft_voice" }, "vibrato_hz": { "type": "number" }, "vibrato_cents": { "type": "number" } }
+        },
+        {
+          "type": "object",
+          "required": ["kind", "bpm"],
+          "additionalProperties": false,
+          "properties": { "kind": { "const": "heartbeat" }, "bpm": { "type": "number", "exclusiveMinimum": 0 } }
+        }
+      ]
+    }
+  }
+}
