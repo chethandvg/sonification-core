@@ -5,6 +5,7 @@
 [![CI](https://github.com/chethandvg/sonification-core/actions/workflows/ci.yml/badge.svg)](https://github.com/chethandvg/sonification-core/actions/workflows/ci.yml)
 [![Proofs](https://github.com/chethandvg/sonification-core/actions/workflows/proofs.yml/badge.svg)](https://github.com/chethandvg/sonification-core/actions/workflows/proofs.yml)
 [![Licence](https://img.shields.io/badge/licence-Apache--2.0-blue)](LICENSE)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24046014.svg)](https://doi.org/10.5281/zenodo.24046014)
 
 Part of **[Frequencies of Life](https://chethandvg.github.io/frequencies-of-life/)**, open code for the rhythms of life in which every claim says how it is known: proved, verified, tested, referenced or assumed.
 
